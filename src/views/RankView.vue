@@ -146,9 +146,17 @@ onMounted(() => {
 <style scoped>
 
 .background {
-    color: #FFFFFF;
-    min-height: 100vh;
-    padding: 20px;
+    background-image: url('https://i.blogs.es/e6db1f/pokemon/1366_2000.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .tit {
@@ -252,13 +260,16 @@ onMounted(() => {
     text-align: center;
     font-size: 25px;
     font-weight: bold;
-    color: white;
+    color: #FFCB05;
     margin: 0;
+    -webkit-text-stroke: 2px black;
 }
 
 .dif {
   top: 40%
 }
+
+
 
 </style>
 

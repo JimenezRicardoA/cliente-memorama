@@ -25,7 +25,7 @@ const getRegions = async () => {
 
 const getUser = async () => {
   const response = await axios.post('http://localhost:3000/get-user', {
-    userName: userName.value
+    username: username.value
   })
 
   if (response) {
@@ -67,7 +67,7 @@ const startGame = () => {
 </script>
 
 <template>
-
+  <div class = "background1">
   <div class = "background">
   <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/International_Pok%C3%A9mon_logo.svg" alt="Pokémon"
     class="logo" style="width: 600px; height: auto;">
@@ -79,7 +79,7 @@ const startGame = () => {
     </div>
 
     <div>
-      <h2 class = "texto">Intrucciones: </h2>
+      <h2 class = "texto">Instrucciones:</h2>
       
       <p class = "texto">Para mostrar al pokemon detrás del Ditto da click en el pokemon deseado, después elige otra opción para encontrar 
         el par</p>
@@ -90,58 +90,64 @@ const startGame = () => {
       <div>
         <p class = "texto">Una vez que hayas encontrado todos los pares, el juego te mostrará tu puntaje</p>
         
-        <p class = "texto">Nombre de Usuario: <input type="text" id="userName" placeholder="Usuario" v-model="username" /></p>
+        <div class="input-container">
+          <label class="texto">Nombre de Usuario:</label>
+          <input type="text" id="username" placeholder="Usuario" v-model="username" class="username-input" />
+        </div>
       </div>
 
-      <button class = "boton"
-      v-show="username !== ''" 
-      v-on:click="getUser"
-      >Registro/Ingreso</button>
+      <div class="button-container">
+        <button class="main-button"
+        v-show="username !== ''" 
+        v-on:click="getUser"
+        >Registro/Ingreso</button>
+      </div>
       
-      <div v-if="regionsReady">
-        <h2>Región</h2>
-        <button v-for="region in regions" v-on:click="setRegion(region)">
-          {{ region }}
+      <div v-if="regionsReady" class="section">
+        <h2 class="texto">Región</h2>
+        <div class="button-group">
+          <button 
+            v-for="region in regions" 
+            v-on:click="setRegion(region)"
+            class="main-button"
+            :class="{ active: gameRegion === region }"
+          >
+            {{ region }}
+          </button>
+        </div>
+      </div>
+      
+      <div v-show="username !== '' && gameRegion !== ''" class="section">
+        <h2 class="texto">Dificultad</h2>
+        <div class="button-group">
+          <button
+            class="main-button"
+            v-for="option in options"
+            :key="option"
+            :class="{ active: gameMode === option }"
+            @click="setMode(option)">
+            {{ option }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="button-container">
+        <button 
+          v-if="username !== '' && gameRegion !== '' && gameMode !== ''" 
+          @click="startGame"
+          class="main-button"
+        >
+          Iniciar Juego
         </button>
       </div>
-      
-      <div v-show="username !== '' && gameRegion !== ''">
-        <h2>Dificultad</h2>
-        <button
-        class="regButton"
-        v-for="option in options"
-        :key="option"
-        :class="{ active: gameMode === option }"
-        @click="setMode(option)">
-        {{ option }}
-      </button>
-    </div>
-      
 
-      <button v-if="username !== '' && gameRegion !== '' && gameMode !== ''" @click="startGame">
-        Start Game
-      </button>
+      </div>
 
       </div>
 
 </template>
 
 <style scoped>
-.regButton {
-  background-color: lightgray;
-  color: black;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.3s;
-}
-
-.regButton.active {
-  background-color: dodgerblue;
-  color: white;
-}
-
 .logo {
   display: block;
   margin: 0 auto;
@@ -149,16 +155,20 @@ const startGame = () => {
 }
 
 .background {
-  width: 150vh;
-  height: 150vh;
-  position: relative;
+  width: 100vh;
+  height: 75vh;
+  position: absolute;
   background-color: #F0F0F0;
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
   border: 5px solid #2D70B7;
   box-sizing: border-box;
-  justify-content: center;
+  
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow-y: auto;
 }
 
 .texto {
@@ -166,5 +176,65 @@ const startGame = () => {
   text-align: center;
 }
 
+.background1 {
+  background-image: url('https://i.blogs.es/e6db1f/pokemon/1366_2000.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.input-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.username-input {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid #2D70B7;
+  border-radius: 8px;
+  margin-left: 10px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.main-button {
+  background: linear-gradient(135deg, #2D70B7, #1e5a96);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(45, 112, 183, 0.3);
+}
+
+.main-button:hover {
+  background: linear-gradient(135deg, #1e5a96, #164a7a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 112, 183, 0.4);
+}
 </style>

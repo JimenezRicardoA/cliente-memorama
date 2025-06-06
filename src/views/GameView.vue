@@ -14,33 +14,35 @@
 
   </div>
 
+  
+<div class =background2>
+
   <div v-if="isLoading" class="loading">
-    <h1>Cargando...</h1>
+    <h1 class = "cargando" >Cargando...</h1>
   </div>
 
   <div v-else>
 
   <div class='column'>
 
-    <div class='row' v-for="(row, rowIndex) in grid" :key = "rowIndex">
-      
-      <div class = 'box' v-for = "item in row" :key = "item.uid"
-      @click="handleClick(item)" role = 'button' tabindex = '0'>
-      <img
-      :src="item.flipped ? item.image : DITTO_IMAGE"
-      :alt="item.name"
-      class="pokemon-image"/>
-      </div>
-    
+    <div class='row' v-for="(row, rowIndex) in grid" :key="rowIndex">
+      <CardView
+      v-for="item in row"
+      :key="item.uid"
+      :item="item"
+      :ditto-image="DITTO_IMAGE"
+      @card-click="handleClick"
+      />
     </div>
 
     <h2 class="puntaje">Puntaje: {{ store.score }}</h2>
 
     <div v-if="finished" class ="finished">
-      <h1>Juego Terminado</h1>
-      <button @click="gotoScore">Score</button>
+      <h1 class = terminado>Juego Terminado</h1>
+      <button class = "main-button" @click="gotoScore">Score</button>
     </div>
 
+  </div>
   </div>
   </div>
 
@@ -54,6 +56,8 @@ import { computed, ref, onMounted } from 'vue'
 import { useGameStore } from '@/stores/counter'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import CardView from '@/components/CardView.vue'
+import { reactive } from 'vue'
 
 const store = useGameStore()
 const DITTO_IMAGE = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png'
@@ -110,11 +114,12 @@ async function loadGrid() {
 
   const pokemonList = await Promise.all(shuffledEntries.map(async (entry) => {
     const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${entry.pokemon_species.name}`)
-    return {
+    return reactive({
       id: res.data.id,
       name: res.data.name,
       image: res.data.sprites.front_default,
-    }
+      flipped: false
+    })
   }))
 
   const paired = shuffle([...pokemonList, ...pokemonList].map((poke, index) => ({
@@ -232,22 +237,19 @@ const gotoScore = () => {
 
 
 <style scoped>
-.box {
-  width: 150px;
-  height: 150px;
-  position: relative;
-  background-color: #FFCB05;
-  border-radius: 12px;
-  padding: 16px;
-  cursor: pointer;
-  border: 5px solid #2D70B7;
-  box-sizing: border-box;
-}
 
-.box button {
+.background {
+  background-image: url('https://i.blogs.es/e6db1f/pokemon/1366_2000.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100vw;
+  height: 100vh;
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .column {
@@ -307,5 +309,57 @@ const gotoScore = () => {
   text-align: center;
   color: #FFCB05;
   font-weight: bold;
+}
+
+.terminado {
+  text-align: center;
+  color: black;
+  font-weight: bold;
+}
+
+.background2 {
+  width: 100vh;
+  height: 75vh;
+  position: absolute;
+  background-color: #F0F0F0;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  border: 5px solid #2D70B7;
+  box-sizing: border-box;
+  
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cargando {
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  justify-content: center;
+  position: absolute;
+  top: 45%;
+  left: 45%;
+}
+
+.main-button {
+  background: linear-gradient(135deg, #2D70B7, #1e5a96);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(45, 112, 183, 0.3);
+  left: 50%;
+}
+
+.main-button:hover {
+  background: linear-gradient(135deg, #1e5a96, #164a7a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 112, 183, 0.4);
 }
 </style>
