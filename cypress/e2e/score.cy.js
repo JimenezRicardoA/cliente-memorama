@@ -5,7 +5,8 @@ describe('Vista Score', () => {
         cy.get('button').contains('Registro/Ingreso').should('be.visible').click();
         cy.get('button').contains('Kanto').click();
         cy.get('button').contains('Facil').click();
-        cy.get('button').contains('Start Game').should('be.visible').click();
+        cy.get('button').contains('Iniciar Juego').should('be.visible').click();
+        cy.url().should('include', '/game');
 
         let cardData = [];
         const ditto = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png';

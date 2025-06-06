@@ -25,6 +25,7 @@ function findMatchingPair(cardData) {
 
 describe('Vista Game', () => {
     beforeEach(() => {
+        cy.visit('http://localhost:5173/');
         cy.get('input#username').should('be.visible').type('Yomero');
         cy.get('button').contains('Registro/Ingreso').should('be.visible').click();
         cy.get('button').contains('Kanto').click();
